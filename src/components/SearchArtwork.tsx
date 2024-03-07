@@ -3,7 +3,7 @@
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api } from "@/trpc/react";
 import useDebounce from "@/hooks/useDebounce";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -71,15 +71,14 @@ export function SearchArtwork() {
   }, []);
 
   return (
-    <div className="relative flex flex-col justify-between gap-4 px-2">
+    <div className=" relative flex  flex-col justify-between gap-4 px-2">
       <Input
         ref={inputRef}
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         onFocus={() => setShowSearchResults(true)}
-        // onBlur={() => setShowSearchResults(false)}
-        placeholder="Search Artworks"
-        className={"mx-2"}
+        placeholder="Search title, content, ..."
+        className={"min-w-[180px]"}
       />
 
       {showSearchResults && !isLoadingSearch && (

@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { constructArtImageUrl } from "@/lib/utils";
 import { type artWorkDataSchema } from "@/server/api/types";
 import { type z } from "zod";
@@ -12,11 +11,13 @@ type ImageViewerProps = {
   imageId?: string | null;
   artwork?: z.infer<typeof artWorkDataSchema>;
   isLoading?: boolean;
+  showTitle?: boolean;
 };
 export function HeroImageViewer({
   imageId,
   artwork,
   isLoading,
+  showTitle = true,
 }: ImageViewerProps) {
   return !isLoading ? (
     <Link
@@ -28,17 +29,18 @@ export function HeroImageViewer({
         src={constructArtImageUrl(imageId) ?? ""}
         alt={artwork?.title ?? ""}
       />
-
-      <h3
-        className={
-          "absolute bottom-12 z-10 flex w-full max-w-4xl flex-col px-12 text-xl font-bold font-semibold mix-blend-lighten"
-        }
-      >
-        {artwork?.title}{" "}
-        <span className={"text-secondary text-clip text-lg "}>
-          {artwork?.artist_display}
-        </span>
-      </h3>
+      {showTitle && (
+        <h3
+          className={
+            "absolute bottom-12 z-10 flex w-full max-w-4xl flex-col px-12 text-xl font-bold font-semibold mix-blend-lighten"
+          }
+        >
+          {artwork?.title}{" "}
+          <span className={"text-secondary text-clip text-lg "}>
+            {artwork?.artist_display}
+          </span>
+        </h3>
+      )}
     </Link>
   ) : (
     <Skeleton className={"min-h-[30vh] w-full"} />

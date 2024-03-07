@@ -22,8 +22,27 @@ export function ArtworkGalleryViewer({
         page,
         limit: 16,
       },
+      filter: params.get("filter")
+        ? {
+            is_public_domain:
+              params.get("filter") === "is_public_domain" ||
+              params.get("filter") === "both",
+            is_on_view:
+              params.get("filter") === "is_on_view" ||
+              params.get("filter") === "both",
+          }
+        : undefined,
     },
     {
+      queryKey: [
+        "artInstituteOfChicago.getAllArtworks",
+        {
+          pagination: {
+            page,
+            limit: 16,
+          },
+        },
+      ],
       initialData: allArtworksResponse,
     },
   );

@@ -14,7 +14,7 @@ export function FavoritesActions({ artwork }: FavoritesActionsProps) {
   const isFavorite = isInFavorites(Number(artwork?.id));
 
   return (
-    <div className={"absolute right-12 top-12"}>
+    <div>
       <Button
         variant="ghost"
         onClick={() =>
