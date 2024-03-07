@@ -3,6 +3,7 @@ import "@/styles/globals.css";
 import { Inter } from "next/font/google";
 
 import { TRPCReactProvider } from "@/trpc/react";
+import Link from "next/link";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -23,6 +24,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans ${inter.variable}`}>
+        <nav className="bg-secondary flex justify-between px-4 py-2">
+          <h1 className="text-center text-xl">Welcome to mock Gallery</h1>
+          <Link className={"text-xl"} href={"/favorites"}>
+            Favorites
+          </Link>
+        </nav>
         <TRPCReactProvider>{children}</TRPCReactProvider>
       </body>
     </html>
