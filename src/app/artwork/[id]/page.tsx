@@ -1,9 +1,5 @@
 import { api } from "@/trpc/server";
 import { HeroImageViewer } from "@/components/ImageViewer";
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Heart } from "lucide-react";
-import { useArtworkStore } from "@/store/favoriteArtwork";
 import { FavoritesActions } from "@/components/FavoritesActions";
 
 type ArtworkPageParams = {
@@ -20,13 +16,18 @@ export default async function Artwork({ params }: ArtworkPageParams) {
   return (
     <main className="flex min-h-screen flex-col gap-4 bg-gradient-to-b from-slate-100 to-slate-200 px-12 py-4 text-slate-900">
       <div className={"relative"}>
-        <HeroImageViewer artwork={artwork} imageId={artwork?.image_id} />
+        <HeroImageViewer
+          artwork={artwork}
+          imageId={artwork?.image_id}
+          showTitle={false}
+        />
+      </div>
+      <div className={"flex items-center gap-4"}>
+        <h3 className={"text-2xl font-semibold"}>
+          {artwork.title} by {artist.title}
+        </h3>
         <FavoritesActions artwork={artwork} />
       </div>
-
-      <h3 className={"text-2xl font-semibold"}>
-        {artwork.title} by {artist.title}
-      </h3>
 
       <p className={"text-sm"}>
         {artwork.description?.replace(/<\/?p>|&quot;|<em>|<\/em>/g, "")}
