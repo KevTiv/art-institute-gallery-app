@@ -6,14 +6,19 @@ import { type artWorkDataSchema } from "@/server/api/types";
 import { type z } from "zod";
 import Link from "next/link";
 import { useCallback, useMemo } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type ImageViewerProps = {
   imageId?: string | null;
   artwork?: z.infer<typeof artWorkDataSchema>;
-  onMouseEnter?: () => void;
+  isLoading?: boolean;
 };
-export function HeroImageViewer({ imageId, artwork }: ImageViewerProps) {
-  return (
+export function HeroImageViewer({
+  imageId,
+  artwork,
+  isLoading,
+}: ImageViewerProps) {
+  return !isLoading ? (
     <Link
       className="relative min-h-[30vh] w-full"
       href={`/artwork/${artwork?.id}`}
@@ -35,16 +40,18 @@ export function HeroImageViewer({ imageId, artwork }: ImageViewerProps) {
         </span>
       </h3>
     </Link>
+  ) : (
+    <Skeleton className={"min-h-[30vh] w-full"} />
   );
 }
 
-export function TileImageViewer({ artwork }: ImageViewerProps) {
+export function TileImageViewer({ artwork, isLoading }: ImageViewerProps) {
   const imgsrc = useMemo(
     () => constructArtImageUrl(artwork?.image_id) ?? "",
     [artwork],
   );
 
-  return (
+  return !isLoading ? (
     <Link
       className="relative w-full overflow-hidden overflow-hidden"
       href={`/artwork/${artwork?.id}`}
@@ -63,5 +70,7 @@ export function TileImageViewer({ artwork }: ImageViewerProps) {
         {artwork?.title}
       </h3>
     </Link>
+  ) : (
+    <Skeleton className={"aspect-auto w-full"} />
   );
 }
