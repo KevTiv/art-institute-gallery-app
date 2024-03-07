@@ -81,13 +81,6 @@ export const getArtworkDetails = z.object({
   config: configSchema,
 });
 
-export const getAllArtists = z.object({
-  pagination: paginationSchema,
-  data: z.array(artistDetails),
-  info: infoSchema,
-  config: configSchema,
-});
-
 export const getArtistDetail = z.object({
   data: artistDetails,
   info: infoSchema,

@@ -2,7 +2,6 @@ import { z } from "zod";
 import axios from "axios";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import {
-  getAllArtists,
   getAllArtworks,
   getArtistDetail,
   getArtworkDetails,
@@ -56,6 +55,19 @@ export const artRouter = createTRPCRouter({
         return getAllArtworks.parse(apiResponse.data);
       } catch (error) {
         throw new Error(`getAllArtworks - ${error as string}`);
+      }
+    }),
+  getArtist: publicProcedure
+    .input(z.object({ artisitId: z.string() }))
+    .query(async ({ input }) => {
+      try {
+        const apiResponse = await axios.get(
+          `${ART_INTITUTE_API_URL}artists/${input.artisitId}`,
+        );
+
+        return getArtistDetail.parse(apiResponse.data);
+      } catch (error) {
+        throw new Error(`getArtist - ${error as string}`);
       }
     }),
   getArtwork: publicProcedure
