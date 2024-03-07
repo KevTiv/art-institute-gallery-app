@@ -37,6 +37,7 @@ export function ArtworkGalleryViewer({
       <HeroImageViewer
         artwork={randomArtwork}
         imageId={randomArtwork?.image_id}
+        isLoading={isLoading}
       />
 
       <div className={"grid w-full grid-cols-1 gap-2 md:grid-cols-3"}>
@@ -44,7 +45,11 @@ export function ArtworkGalleryViewer({
           artworks
             ?.filter((artwork) => artwork.id !== randomArtwork?.id)
             .map((artwork) => (
-              <TileImageViewer key={String(artwork.id)} artwork={artwork} />
+              <TileImageViewer
+                key={String(artwork.id)}
+                artwork={artwork}
+                isLoading={isLoading}
+              />
             ))}
       </div>
 
