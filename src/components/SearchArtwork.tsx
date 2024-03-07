@@ -15,7 +15,7 @@ export function SearchArtwork() {
     // Initialize search term from the URL query parameters
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
-      return params.get("search") || "";
+      return params.get("search") ?? "";
     }
     return "";
   });
