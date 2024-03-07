@@ -54,7 +54,7 @@ export function ArtworkGalleryViewer({
   const randomArtwork = artworks?.[Math.floor(Math.random() * artworks.length)];
 
   return (
-    <>
+    <Suspense fallback={<Skeleton className="h-full w-full" />}>
       <HeroImageViewer
         artwork={randomArtwork}
         imageId={randomArtwork?.image_id}
@@ -75,6 +75,6 @@ export function ArtworkGalleryViewer({
       </div>
 
       {Number(pagination?.total_pages) > 1 && <ArtworksPagination />}
-    </>
+    </Suspense>
   );
 }
