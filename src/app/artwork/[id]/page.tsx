@@ -36,7 +36,7 @@ export default async function Artwork({ params }: ArtworkPageParams) {
       {artwork.date_start && artwork.date_end && artist.title && (
         <p className={"text-xs"}>
           {artist.title} started working on this piece in {artwork.date_start}{" "}
-          and finsihed in {artwork.date_end}
+          and finished in {artwork.date_end}
         </p>
       )}
     </main>
