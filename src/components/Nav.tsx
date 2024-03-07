@@ -11,24 +11,25 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 
 export function Nav() {
-  const pathname = usePathname();
   const [selectedFilter, setSelectedFilter] = useState("");
 
   // Update the URL when selectedFilter changes
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
 
-    if (selectedFilter) {
-      params.set("filter", selectedFilter);
-    } else {
-      params.delete("filter");
+      if (selectedFilter) {
+        params.set("filter", selectedFilter);
+      } else {
+        params.delete("filter");
+      }
+
+      const newUrl = `${window.location.pathname}?${params.toString()}`;
+      window.history.replaceState(null, "", newUrl);
     }
-    const url = `${pathname}?${params.toString()}`;
-    history.replaceState({}, "", url);
-  }, [selectedFilter, pathname]);
+  }, [selectedFilter]);
 
   return (
     <nav className="flex justify-between px-4 py-2 font-semibold">

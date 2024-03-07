@@ -5,7 +5,7 @@ import { type z } from "zod";
 import { type getAllArtworks } from "@/server/api/types";
 import { api } from "@/trpc/react";
 import { useSearchParams } from "next/navigation";
-import { ArtworksPagination } from "@/components/artworksPagination";
+import { ArtworksPagination } from "@/components/ArtworksPagination";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 

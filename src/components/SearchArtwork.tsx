@@ -6,30 +6,36 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { api } from "@/trpc/react";
 import useDebounce from "@/hooks/useDebounce";
-import { usePathname, useSearchParams } from "next/navigation";
 
 export function SearchArtwork() {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
   const inputRef = useRef<HTMLInputElement>(null);
   const searchResultRef = useRef<HTMLDivElement>(null);
 
-  const initialSearchTerm = searchParams.get("search") ?? "";
-  const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
+  const [searchTerm, setSearchTerm] = useState(() => {
+    // Initialize search term from the URL query parameters
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("search") || "";
+    }
+    return "";
+  });
+
   const [showSearchResults, setShowSearchResults] = useState(false);
   const debouncedSearch = useDebounce(searchTerm, 500);
 
   // Update URL with debounced search term
   useEffect(() => {
-    const params = new URLSearchParams(searchParams);
-    if (debouncedSearch && debouncedSearch?.trim() !== "") {
-      params.set("search", debouncedSearch.trim());
-    } else {
-      params.delete("search");
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (debouncedSearch?.trim() !== "") {
+        params.set("search", String(debouncedSearch).trim());
+      } else {
+        params.delete("search");
+      }
+      const newUrl = `${window.location.pathname}?${params.toString()}`;
+      window.history.replaceState({}, "", newUrl);
     }
-    const url = `${pathname}?${params.toString()}`;
-    history.replaceState({}, "", url);
-  }, [debouncedSearch, pathname, searchParams]);
+  }, [debouncedSearch]);
 
   // Fetch search results
   const { data: searchResult, isLoading: isLoadingSearch } =
@@ -53,7 +59,6 @@ export function SearchArtwork() {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        event.target &&
         inputRef.current &&
         !inputRef.current.contains(event.target as Node) &&
         searchResultRef.current &&
@@ -64,10 +69,7 @@ export function SearchArtwork() {
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
