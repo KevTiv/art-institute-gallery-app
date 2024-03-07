@@ -1,28 +1,70 @@
 import { z } from "zod";
 import axios from "axios";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
-import { getAllArtists, getAllArtworks } from "@/server/api/types";
+import {
+  getAllArtists,
+  getAllArtworks,
+  getArtistDetail,
+  getArtworkDetails,
+} from "@/server/api/types";
 
 const ART_INTITUTE_API_URL = "https://api.artic.edu/api/v1/";
-const constructArtImageUrl = (imageId: string) => `https://www.artic.edu/iiif/2/${imageId}/full/843,/0/default.jpg`;
 
 export const artRouter = createTRPCRouter({
-  getAllArtworks: publicProcedure.query(async () => {
-    try {
-      const apiResponse = await axios.get(`${ART_INTITUTE_API_URL}artworks/`);
+  getAllArtworks: publicProcedure
+    .input(
+      z
+        .object({
+          pagination: z
+            .object({
+              page: z.number(),
+              limit: z.number(),
+            })
+            .optional(),
+          filter: z
+            .object({
+              is_public_domain: z.boolean().optional(),
+              is_on_view: z.boolean().optional(),
+            })
+            .optional(),
+          search: z.string().optional(),
+        })
+        .optional(),
+    )
+    .query(async ({ input }) => {
+      try {
+        const apiResponse = await axios.get(
+          `${ART_INTITUTE_API_URL}artworks/${!!input?.search ? `search?q=${input.search}` : ""}`,
+          {
+            params: {
+              page: input?.pagination?.page ?? 1,
+              limit: input?.pagination?.limit ?? 16,
+            },
+            data: input?.filter
+              ? {
+                  query: {
+                    term: {
+                      is_public_domain: input.filter.is_public_domain,
+                      is_on_view: input.filter.is_on_view,
+                    },
+                  },
+                }
+              : undefined,
+          },
+        );
 
-      return getAllArtworks.parse(apiResponse.data);
-    } catch (error) {
-      throw new Error(`getAllArtworks - ${error}`);
-    }
-  }),
+        return getAllArtworks.parse(apiResponse.data);
+      } catch (error) {
+        throw new Error(`getAllArtworks - ${error as string}`);
+      }
+    }),
   getAllArtists: publicProcedure.query(async () => {
     try {
       const apiResponse = await axios.get(`${ART_INTITUTE_API_URL}artists/`);
 
       return getAllArtists.parse(apiResponse.data);
     } catch (error) {
-      throw new Error(`getAllArtists - ${error}`);
+      throw new Error(`getAllArtists - ${error as string}`);
     }
   }),
   getArtist: publicProcedure
@@ -33,9 +75,9 @@ export const artRouter = createTRPCRouter({
           `${ART_INTITUTE_API_URL}artists/${input.artisitId}`,
         );
 
-        return apiResponse.data;
+        return getArtistDetail.parse(apiResponse.data);
       } catch (error) {
-        throw new Error(`getArtist - ${error}`);
+        throw new Error(`getArtist - ${error as string}`);
       }
     }),
   getArtwork: publicProcedure
@@ -46,21 +88,9 @@ export const artRouter = createTRPCRouter({
           `${ART_INTITUTE_API_URL}artworks/${input.artworkId}`,
         );
 
-        return apiResponse.data;
+        return getArtworkDetails.parse(apiResponse.data);
       } catch (error) {
-        throw new Error(`getArtwork - ${error}`);
+        throw new Error(`getArtwork - ${error as string}`);
       }
     }),
-  getArtworkImage: publicProcedure
-    .input(z.object({ artWorkImgId: z.string() }))
-    .query(async ({ input }) => {
-      try {
-        const imgUrl = constructArtImageUrl(input.artWorkImgId)
-        const apiResponse = await axios.get(imgUrl);
-
-        return z.string().url().parse(apiResponse.data)
-      } catch (error) {
-        throw new Error(`getArtworkImage - ${error}`);
-      }
-    })
 });
