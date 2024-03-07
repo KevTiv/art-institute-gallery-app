@@ -58,28 +58,6 @@ export const artRouter = createTRPCRouter({
         throw new Error(`getAllArtworks - ${error as string}`);
       }
     }),
-  getAllArtists: publicProcedure.query(async () => {
-    try {
-      const apiResponse = await axios.get(`${ART_INTITUTE_API_URL}artists/`);
-
-      return getAllArtists.parse(apiResponse.data);
-    } catch (error) {
-      throw new Error(`getAllArtists - ${error as string}`);
-    }
-  }),
-  getArtist: publicProcedure
-    .input(z.object({ artisitId: z.string() }))
-    .query(async ({ input }) => {
-      try {
-        const apiResponse = await axios.get(
-          `${ART_INTITUTE_API_URL}artists/${input.artisitId}`,
-        );
-
-        return getArtistDetail.parse(apiResponse.data);
-      } catch (error) {
-        throw new Error(`getArtist - ${error as string}`);
-      }
-    }),
   getArtwork: publicProcedure
     .input(z.object({ artworkId: z.string() }))
     .query(async ({ input }) => {

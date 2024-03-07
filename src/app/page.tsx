@@ -1,8 +1,6 @@
 import { unstable_noStore as noStore } from "next/cache";
 import { api } from "@/trpc/server";
 import { ArtworkGalleryViewer } from "@/components/ArtworkGalleryViewer";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Suspense } from "react";
 
 export default async function Home() {
   noStore();
