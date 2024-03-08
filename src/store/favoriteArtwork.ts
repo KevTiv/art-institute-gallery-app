@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { type artWorkDataSchema } from "@/server/api/types";
 
-type Artwork = z.infer<typeof artWorkDataSchema>;
+export type Artwork = z.infer<typeof artWorkDataSchema>;
 type FavoriteArtworks = {
   artworks: Partial<Artwork>[];
   isInFavorites: (artworkId: number) => boolean;
